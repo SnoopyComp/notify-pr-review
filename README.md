@@ -6,6 +6,10 @@ PR 리뷰 요청을 받으면 Slack으로 알리는 Github Actions
 
 <img src="https://user-images.githubusercontent.com/13075245/279234262-cbe5c159-e103-49eb-bf1f-b50116f98984.png" width="500" alt="intro">
 
+## Version 1.3.0 (Customed)
+
+- GitHub의 Repository variable을 사용해서 `GitHub` 닉네임과 `Slack` id를 매칭하는 기능 추가  
+
 ## Usage
 
 1. 메시지 전달을 위해 `SLACK_BOT_TOKEN` 이름의 secret을 세팅하세요.
@@ -31,6 +35,7 @@ jobs:
         uses: naver/notify-pr-review@v1.2.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          slackIds: ${{ vars.SLACK_IDS }}
           slackBotToken: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
 
@@ -39,6 +44,17 @@ jobs:
 ### `token`
 
 **Required** GitHub에서 제공하는 토큰
+
+### `slackIds`
+
+**Required** 레포지토리 내 동료들의 `GitHub 닉네임`:`Slack Id`
+
+**`Slack Id`: Slack 가입 이메일의 '@'앞부분**
+
+e.g. 
+```
+"SnoopyComp:hyunchang52,hikarigin99:eunbi777"
+```
 
 ### `slackBotToken`
 

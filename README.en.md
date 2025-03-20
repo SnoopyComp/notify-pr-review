@@ -6,6 +6,10 @@ GitHub Actions to notify on Slack when a PR review is requested.
 
 <img src="https://user-images.githubusercontent.com/13075245/279234262-cbe5c159-e103-49eb-bf1f-b50116f98984.png" width="500" alt="intro">
 
+## Version 1.3.0 (Customed)
+
+- Add a feature that uses the GitHub repository variable to match the GitHub nickname with the Slack ID
+
 ## Usage
 
 1. Set up a secret named `SLACK_BOT_TOKEN` to send the message.
@@ -31,6 +35,7 @@ jobs:
         uses: naver/notify-pr-review@v1.2.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          slackIds: ${{ vars.SLACK_IDS }}
           slackBotToken: ${{ secrets.SLACK_BOT_TOKEN }}
 ```
 
@@ -39,6 +44,17 @@ jobs:
 ### `token`
 
 **Required** GitHub token
+
+### `slackIds`
+
+**Required** For colleagues in repo `Nickname of GitHub`:`Slack Id`
+
+**`Slack Id`: The part before the '@' in the Slack sign-up email.**
+
+e.g.
+```
+"SnoopyComp:hyunchang52,hikarigin99:eunbi777"
+```
 
 ### `slackBotToken`
 

@@ -11,17 +11,11 @@ const ENCODE_PAIR = {
     ">": "&gt;"
 };
 const encodeText = text => text.replace(/[<>]/g, matched => ENCODE_PAIR[matched]);
-const fetchUser = url => axios({
-    method: "get",
-    headers: {
-        Authorization: `token ${core.getInput("token")}`
-    },
-    url
-}).then(res => res.data);
 const D0 = "D-0";
-const sendSlack = ({repoName, labels, title, url, email}) => {
-    const [name] = email.split("@");
+const sendSlack = ({repoName, labels, title, url, slackId}) => {
     const d0exists = labels.some(label => label.name === D0);
+
+    core.info(`send message to ${slackId}..., ${core.getInput("slackBotToken")}`);
 
     return axios({
         method: "post",
@@ -31,14 +25,14 @@ const sendSlack = ({repoName, labels, title, url, email}) => {
         },
         url: "https://slack.com/api/chat.postMessage",
         data: {
-            channel: `@${name}`,
+            channel: `@${slackId}`,
             text: "리뷰 요청을 받았어요! 😊",
             blocks: [
                 {
                     type: "section",
                     text: {
                         type: "mrkdwn",
-                        text: `📬 <@${name}> 님 새로운 리뷰 요청이 도착했어요! 가능한 빠르게 리뷰에 참여해 주세요:`
+                        text: `📬 <@${slackId}> 님 새로운 리뷰 요청이 도착했어요! 가능한 빠르게 리뷰에 참여해 주세요:`
                     }
                 },
                 {
@@ -82,6 +76,11 @@ const sendSlack = ({repoName, labels, title, url, email}) => {
         }
     });
 };
+const slackId = (slackIds, githubNickName) =>
+    slackIds
+        .split(",")
+        .map(row => row.split(":"))
+        .find(([githubName]) => githubName === githubNickName)?.[1];
 (async () => {
     try {
         const {
@@ -114,21 +113,26 @@ const sendSlack = ({repoName, labels, title, url, email}) => {
         core.info(`'${sender.login}' requests a pr review for ${title}(${prUrl})`);
         core.info(`Fetching information about '${login}'...`);
 
-        const {email} = await fetchUser(url);
 
-        core.info(`Sending a slack msg to '${login}'...`);
 
-        if (!email) {
-            core.warning(`Failed: '${login}' has no public email.`);
-            core.notice(`Failed: '${login}' has no public email.`);
+        const id = slackId(core.getInput("slackIds"),login);
+        core.info(`Sending a slack msg to '${login}(${id})'...`);
 
-            return;
+        const response = await sendSlack({
+            repoName: repoName,
+            labels: labels,
+            title: title,
+            url: prUrl,
+            slackId: id
+        });
+
+        if(JSON.stringify(response.data).split(",")[0].split(":")[1] === "true"){
+            core.info("Successfully sent");
+            core.notice("Successfully sent");
+        }else{
+            core.info(`Slack response data: ${JSON.stringify(response.data)}`);
+            core.setFailed(JSON.stringify(response.data));
         }
-
-        await sendSlack({repoName, labels, title, url: prUrl, email});
-
-        core.info("Successfully sent");
-        core.notice("Successfully sent");
     } catch (error) {
         core.setFailed(error.message);
     }
