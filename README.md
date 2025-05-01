@@ -18,7 +18,21 @@ PR 리뷰 요청을 받으면 Slack으로 알리는 Github Actions
 
 이때, Value는 슬랙에서 제공하는 `xoxb-` 형태의 토큰이어야 합니다.
 
-2. `.github/workflow/notify-pr-review.yml` 파일을 만드세요:
+
+2. Repository Variables에 `SLACK_IDS` 변수를 생성하세요.
+
+> Repository setting -> Security -> Secrets and variables -> Actions -> Variables -> Repository Variables
+
+`SLACK_IDS`: 레포지토리 내 동료들의 `GitHub 닉네임`:`Slack Id` 형태
+
+**`Slack Id`: Slack 가입 이메일의 '@'앞부분**
+
+e.g. 
+```
+"SnoopyComp:hyunchang52,hikarigin99:eunbi777, ..."
+```
+
+3. `.github/workflow/notify-pr-review.yml` 파일을 만드세요:
 
 ```yml
 name: notify pr review
@@ -47,14 +61,7 @@ jobs:
 
 ### `slackIds`
 
-**Required** 레포지토리 내 동료들의 `GitHub 닉네임`:`Slack Id`
-
-**`Slack Id`: Slack 가입 이메일의 '@'앞부분**
-
-e.g. 
-```
-"SnoopyComp:hyunchang52,hikarigin99:eunbi777"
-```
+**Required** Repository Variables에 SLACK_IDS가 정의되어 있어야 함
 
 ### `slackBotToken`
 
