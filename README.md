@@ -32,7 +32,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Notify PR Review
-        uses: naver/notify-pr-review@v1.2.1
+        uses: SnoopyComp/notify-pr-review@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           slackIds: ${{ vars.SLACK_IDS }}
