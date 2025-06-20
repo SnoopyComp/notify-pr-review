@@ -26,13 +26,13 @@ name: notify pr review
 on:
   pull_request:
     types: [review_requested]
-    
+
 jobs:
   notify:
     runs-on: [ubuntu-latest]
     steps:
       - name: Notify PR Review
-        uses: naver/notify-pr-review@v1.2.1
+        uses: SnoopyComp/notify-pr-review@v1.3.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           slackIds: ${{ vars.SLACK_IDS }}
@@ -49,11 +49,11 @@ jobs:
 
 **Required** For colleagues in repo `Nickname of GitHub`:`Slack Id`
 
-**`Slack Id`: The part before the '@' in the Slack sign-up email.**
+**`Slack Id`: At slack profile -> Copy member ID
 
 e.g.
 ```
-"SnoopyComp:hyunchang52,hikarigin99:eunbi777"
+"SnoopyComp:U08UZVUFU8N,hikarigin99:U08VFBD06SG, ..."
 ```
 
 ### `slackBotToken`
